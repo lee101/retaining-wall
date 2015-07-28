@@ -1,7 +1,8 @@
 class RetainingWallSolver(object):
-    def retaining_wall(self, wood_lengths, required_lengths):
-        self.required_lengths = required_lengths
-        return self.retaining_wall_recursive(wood_lengths, len(required_lengths) - 1)
+    def retaining_wall(self, wood_lengths, rows_of_required_lengths):
+        self.rows_of_required_lengths = rows_of_required_lengths
+        return self.retaining_wall_recursive(wood_lengths, len(rows_of_required_lengths) - 1)
+
 
     def retaining_wall_recursive(self, wood_lengths, required_length_idx):
         if required_length_idx <= -1:
@@ -9,7 +10,7 @@ class RetainingWallSolver(object):
                 'cuts': []
             }
 
-        current_required_length = self.required_lengths[required_length_idx]
+        current_required_length = self.rows_of_required_lengths[required_length_idx]
 
         possible_subsolutions = []
         for wood_length_idx in range(len(wood_lengths) - 1, -1, -1):
@@ -41,3 +42,4 @@ class RetainingWallSolver(object):
 
         # return the solution with the least number of cuts
         return min(possible_subsolutions, key=lambda s: len(s['cuts']))
+
