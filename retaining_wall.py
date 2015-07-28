@@ -17,7 +17,7 @@ class RetainingWallSolver(object):
                 # cant cut from this length
                 continue
 
-            # what if we chose to cut this required length out of this wood length
+            # what if we chose to cut current_required_length out of this wood length
 
             new_wood_lengths = list(wood_lengths)
 
