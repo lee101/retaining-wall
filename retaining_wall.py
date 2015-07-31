@@ -12,7 +12,12 @@ class RetainingWallSolver(object):
         current_required_length = self.required_lengths[required_length_idx]
 
         possible_subsolutions = []
+        seen_wood_lengths = set()
         for wood_length_idx in range(len(wood_lengths) - 1, -1, -1):
+            if wood_lengths[wood_length_idx] in seen_wood_lengths:
+                continue
+            seen_wood_lengths.add(wood_lengths[wood_length_idx])
+
             if wood_lengths[wood_length_idx] < current_required_length:
                 # cant cut from this length
                 continue
