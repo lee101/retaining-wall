@@ -1,9 +1,54 @@
+from collections import defaultdict, Counter
+import copy
+import functools
+
+
+class set_memoized(object):
+    pass
+
+
+class set_memoized(object):
+    '''Decorator. Caches a function's return value each time it is called.
+    If called later with the same arguments, the cached value is returned
+    (not reevaluated).
+    '''
+
+    def __init__(self, func):
+        self.func = func
+        self.cache = {}
+
+    def __call__(self, *args):
+        cache_key = []
+        for arg in args:
+            if isinstance(arg, list):
+                cache_key.append(frozenset(Counter(arg).items()))
+            else:
+                cache_key.append(arg)
+        cache_key = tuple(cache_key)
+
+        if cache_key in self.cache:
+            return self.cache[cache_key]
+        else:
+            value = self.func(*args)
+            self.cache[cache_key] = copy.deepcopy(value)
+            return value
+
+    def __repr__(self):
+        '''Return the function's docstring.'''
+        return self.func.__doc__
+
+    def __get__(self, obj, objtype):
+        '''Support instance methods.'''
+        return functools.partial(self.__call__, obj)
+
+
 class RetainingWallSolver(object):
     def retaining_wall(self, wood_lengths, required_lengths):
         self.required_lengths = required_lengths
-        return self.retaining_wall_recursive(wood_lengths, len(required_lengths) - 1)
+        return self.retaining_wall_memoized(wood_lengths, len(required_lengths) - 1)
 
-    def retaining_wall_recursive(self, wood_lengths, required_length_idx):
+    @set_memoized
+    def retaining_wall_memoized(self, wood_lengths, required_length_idx):
         if required_length_idx <= -1:
             return {
                 'cuts': []
@@ -28,9 +73,10 @@ class RetainingWallSolver(object):
 
             wood_lengths[wood_length_idx] -= current_required_length
 
-            subsolution = self.retaining_wall_recursive(wood_lengths, required_length_idx - 1)
+            subsolution = self.retaining_wall_memoized(wood_lengths, required_length_idx - 1)
 
             if not subsolution:
+                wood_lengths[wood_length_idx] += current_required_length
                 continue
 
             # don't need to cut if the wood length and required length are the same
@@ -40,7 +86,7 @@ class RetainingWallSolver(object):
                     'cut_amount': current_required_length
                 })
 
-            #roll back the state of wood_lengths
+            # roll back the state of wood_lengths
             wood_lengths[wood_length_idx] += current_required_length
 
             possible_subsolutions.append(subsolution)
