@@ -49,6 +49,9 @@ class RetainingWallTest(unittest.TestCase):
         wall = solver.retaining_wall(list(range(100, 105)), list(range(100)))
         self.assertFalse(wall)
 
+        # wall = solver.retaining_wall(list(range(40, 100)), list(range(1, 40)))
+        # self.assertFalse(wall)
+
 
 if __name__ == '__main__':
     unittest.main()

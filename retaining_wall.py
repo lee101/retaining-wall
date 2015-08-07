@@ -2,10 +2,12 @@ import copy
 import functools
 
 
-class set_memoized(object):
+class unordered_memoized(object):
     '''Decorator. Caches a function's return value each time it is called.
     If called later with the same arguments, the cached value is returned
     (not reevaluated).
+    list arguments are hashed irrespective of the order of items.
+    a deepcopy is cached to avoid changing contents of the cache by operating on a functions return value.
     '''
 
     def __init__(self, func):
@@ -40,10 +42,10 @@ class set_memoized(object):
 class RetainingWallSolver(object):
     def retaining_wall(self, wood_lengths, required_lengths):
         self.required_lengths = required_lengths
-        return self.retaining_wall_memoized(wood_lengths, len(required_lengths) - 1)
+        return self.retaining_wall_recursive(wood_lengths, len(required_lengths) - 1)
 
-    @set_memoized
-    def retaining_wall_memoized(self, wood_lengths, required_length_idx):
+    @unordered_memoized
+    def retaining_wall_recursive(self, wood_lengths, required_length_idx):
         if required_length_idx <= -1:
             return {
                 'cuts': []
@@ -68,7 +70,7 @@ class RetainingWallSolver(object):
 
             wood_lengths[wood_length_idx] -= current_required_length
 
-            subsolution = self.retaining_wall_memoized(wood_lengths, required_length_idx - 1)
+            subsolution = self.retaining_wall_recursive(wood_lengths, required_length_idx - 1)
 
             if not subsolution:
                 wood_lengths[wood_length_idx] += current_required_length
