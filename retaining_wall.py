@@ -16,7 +16,7 @@ class set_memoized(object):
         cache_key = []
         for arg in args:
             if isinstance(arg, list):
-                cache_key.append(tuple(arg))
+                cache_key.append(tuple(sorted(arg)))
             else:
                 cache_key.append(arg)
         cache_key = tuple(cache_key)
