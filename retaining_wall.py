@@ -4,10 +4,6 @@ import functools
 
 
 class set_memoized(object):
-    pass
-
-
-class set_memoized(object):
     '''Decorator. Caches a function's return value each time it is called.
     If called later with the same arguments, the cached value is returned
     (not reevaluated).
@@ -21,7 +17,7 @@ class set_memoized(object):
         cache_key = []
         for arg in args:
             if isinstance(arg, list):
-                cache_key.append(frozenset(Counter(arg).items()))
+                cache_key.append(tuple(arg))
             else:
                 cache_key.append(arg)
         cache_key = tuple(cache_key)
